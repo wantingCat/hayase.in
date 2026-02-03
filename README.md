@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hayase - Premium Anime Collectibles Store
+
+Hayase is a modern, high-performance e-commerce platform built for anime figure collectors in India. It features a "Cyber-Kawaii" aesthetic, a robust admin dashboard, and a seamless shopping experience.
+
+![Hero Banner](/public/logo.png)
+
+## Tech Stack
+
+- **Framework:** [Next.js 14](https://nextjs.org/) (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS + Framer Motion (Animations)
+- **Database & Auth:** [Supabase](https://supabase.com/)
+- **State Management:** React Hooks + Server Components
+- **Icons:** Lucide React
+
+## Features
+
+### 🛍️ Storefront (Customer Facing)
+- **Immersive Home Page:** Full-screen hero section with abstract animations.
+- **Floating Navbar:** "Mobile-First" glassmorphism pill navigation.
+- **Featured Drops:** Dynamic grid showcasing the latest high-value figures.
+- **Responsive Design:** Optimized for all devices, from mobile phones to 4K desktops.
+
+### 🛡️ Admin Dashboard (Protected)
+- **Secure Authentication:** Custom login flow restricted to admin users via RLS.
+- **Product Management:**
+  - Slide-over form for adding/editing products.
+  - Client-side image compression & optimization.
+  - Multi-image upload to Supabase Storage.
+  - Strict deletion logic (removes images from bucket + DB row).
+- **Order Management:**
+  - Real-time order tracking (Pending -> Shipped -> Delivered).
+  - **Secure Payment Verification:** View private payment screenshots via short-lived Signed URLs.
+  - Auto-cleanup of sensitive proof images upon verification.
 
 ## Getting Started
 
-First, run the development server:
+1. **Clone the repository:**
+   ```bash
+   git clone git@github.com:wantingCat/hayase.in.git
+   cd hayase.in
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Set up Environment Variables:**
+   Create a `.env.local` file:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. **Open:** [http://localhost:3000](http://localhost:3000)
 
-## Learn More
+## Database Schema
 
-To learn more about Next.js, take a look at the following resources:
+The project uses Supabase Postgres with specific tables for `products`, `orders`, and `admins` secured by Row Level Security (RLS) policies. See `schema.sql` for details.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Private / Proprietary.

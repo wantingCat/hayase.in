@@ -30,15 +30,8 @@ export default function PaymentModal({ order, isOpen, onClose, onVerify }: Payme
                     // If it's just the path, use it directly.
                     // Let's handle generic full URL case by splitting.
 
-                    let path = order.payment_screenshot_url;
-
-                    // Simple heuristic: if it contains the supabase storage url, try to split.
-                    // Ideally, we should store just the path or handle this more robustly.
-                    // For now, let's assume if it starts with 'http', we try to extract the last part.
-                    // A safer bet for private buckets is that we might be storing the path directly?
-                    // But previous code uploaded and got publicUrl. 
-                    // If we made the bucket private, we MUST rely on signed URLs.
-                    // Let's assume the stored value MIGHT be a full URL, so we extract the filename.
+                    const path = order.payment_screenshot_url;
+                    if (!path) return;
 
                     const urlParts = path.split('/');
                     const fileName = urlParts[urlParts.length - 1];
