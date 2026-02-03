@@ -3,25 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  --background: #0a0e17;
+  --foreground: #ededed;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .glassmorphism {
+    @apply bg-opacity-20 bg-gray-900 backdrop-filter backdrop-blur-lg border border-white/10;
   }
 }
