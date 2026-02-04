@@ -22,5 +22,4 @@ export interface Order {
     total_amount: number;
     status: 'pending_verification' | 'confirmed' | 'shipped' | 'cancelled';
     upi_transaction_id: string | null;
-    payment_screenshot_url: string | null;
 }

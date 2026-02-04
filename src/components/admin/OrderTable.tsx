@@ -1,11 +1,10 @@
 "use client";
 
 import { Order } from "@/types";
-import { motion, AnimatePresence } from "framer-motion";
-import { Eye, ChevronDown, Check, Package, BadgeCheck, X } from "lucide-react";
+import { motion } from "framer-motion";
+import { Copy, Check, Truck } from "lucide-react";
 import clsx from "clsx";
 import { useState } from "react";
-import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -14,53 +13,15 @@ interface OrderTableProps {
     orders: Order[];
 }
 
-import PaymentModal from "./PaymentModal";
-
 export default function OrderTable({ orders }: OrderTableProps) {
-    const [selectedOrderForVerification, setSelectedOrderForVerification] = useState<Order | null>(null);
     const supabase = createClient();
     const router = useRouter();
 
     const updateStatus = async (orderId: string, newStatus: string) => {
         try {
-            // If status is being set to 'confirmed' (Paid), delete the proof from storage
-            let updateData: any = { status: newStatus };
-
-            if (newStatus === 'confirmed') {
-                // 1. Fetch order to get the screenshot URL
-                const { data: order, error: fetchError } = await supabase
-                    .from('orders')
-                    .select('payment_screenshot_url')
-                    .eq('id', orderId)
-                    .single();
-
-                if (fetchError) {
-                    console.error("Error fetching order for verification:", fetchError);
-                    // Continue, but maybe warn? For now, risk orphaned file rather than blocking business.
-                } else if (order?.payment_screenshot_url) {
-                    const url = order.payment_screenshot_url;
-                    const parts = url.split('/');
-                    const fileName = parts[parts.length - 1];
-
-                    // 2. Remove from storage
-                    const { error: storageError } = await supabase.storage
-                        .from('order-proofs')
-                        .remove([fileName]);
-
-                    if (storageError) {
-                        console.error("Error removing proof:", storageError);
-                        toast.warning("Failed to delete proof from storage");
-                    } else {
-                        // 3. Set DB field to null
-                        updateData.payment_screenshot_url = null;
-                        toast.info("Payment proof deleted from storage to save space.");
-                    }
-                }
-            }
-
             const { error } = await supabase
                 .from('orders')
-                .update(updateData)
+                .update({ status: newStatus })
                 .eq('id', orderId);
 
             if (error) throw error;
@@ -70,6 +31,11 @@ export default function OrderTable({ orders }: OrderTableProps) {
             console.error("Error updating order:", error);
             toast.error("Failed to update status");
         }
+    };
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        toast.success("Transaction ID copied!");
     };
 
     const StatusBadge = ({ status }: { status: string }) => {
@@ -90,14 +56,15 @@ export default function OrderTable({ orders }: OrderTableProps) {
 
     return (
         <>
-            <div className="w-full overflow-hidden rounded-xl border border-white/10 glassmorphism">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-hidden rounded-xl border border-white/10 glassmorphism">
                 <table className="w-full text-left border-collapse">
                     <thead className="bg-white/5 text-gray-400 uppercase text-xs tracking-wider">
                         <tr>
                             <th className="p-4">Order ID</th>
                             <th className="p-4">Customer</th>
-                            <th className="p-4">Amount</th>
-                            <th className="p-4">Payment</th>
+                            <th className="p-4">Total (₹)</th>
+                            <th className="p-4">Transaction ID (UTR)</th>
                             <th className="p-4">Status</th>
                             <th className="p-4 text-right">Actions</th>
                         </tr>
@@ -118,9 +85,18 @@ export default function OrderTable({ orders }: OrderTableProps) {
                                     <div className="text-xs text-gray-500">{order.customer_email}</div>
                                 </td>
                                 <td className="p-4 font-mono text-soft-cyan">₹{order.total_amount}</td>
-                                <td className="p-4 text-xs">
-                                    <div className="flex flex-col">
-                                        <span className="text-gray-400">UPI: {order.upi_transaction_id || 'N/A'}</span>
+                                <td className="p-4">
+                                    <div className="flex items-center gap-2">
+                                        <div className="font-mono text-white/80">{order.upi_transaction_id || 'N/A'}</div>
+                                        {order.upi_transaction_id && (
+                                            <button
+                                                onClick={() => copyToClipboard(order.upi_transaction_id!)}
+                                                className="p-1.5 hover:bg-white/10 rounded-lg text-gray-500 hover:text-white transition-colors"
+                                                title="Copy UTR matches"
+                                            >
+                                                <Copy size={12} />
+                                            </button>
+                                        )}
                                     </div>
                                 </td>
                                 <td className="p-4">
@@ -128,29 +104,24 @@ export default function OrderTable({ orders }: OrderTableProps) {
                                 </td>
                                 <td className="p-4 text-right">
                                     <div className="flex items-center justify-end gap-2">
-                                        {order.payment_screenshot_url && (
+                                        {order.status !== 'confirmed' && order.status !== 'shipped' && order.status !== 'cancelled' && (
                                             <button
-                                                onClick={() => setSelectedOrderForVerification(order)}
-                                                className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-cyber-pink transition-colors"
-                                                title="Verify Payment"
+                                                onClick={() => updateStatus(order.id, 'confirmed')}
+                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 text-green-400 border border-green-500/20 rounded-lg text-xs font-medium hover:bg-green-500/20 transition-colors"
                                             >
-                                                <Eye size={16} />
+                                                <Check size={12} />
+                                                Mark Paid
                                             </button>
                                         )}
-
-                                        <div className="relative group">
-                                            <select
-                                                value={order.status}
-                                                onChange={(e) => updateStatus(order.id, e.target.value)}
-                                                className="appearance-none bg-black/30 border border-white/10 text-white text-xs rounded px-2 py-1 pr-6 focus:outline-none focus:border-cyber-pink/50 cursor-pointer hover:bg-white/5"
+                                        {order.status === 'confirmed' && (
+                                            <button
+                                                onClick={() => updateStatus(order.id, 'shipped')}
+                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-medium hover:bg-blue-500/20 transition-colors"
                                             >
-                                                <option value="pending_verification">Pending</option>
-                                                <option value="confirmed">Confirmed</option>
-                                                <option value="shipped">Shipped</option>
-                                                <option value="cancelled">Cancelled</option>
-                                            </select>
-                                            <ChevronDown size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                                        </div>
+                                                <Truck size={12} />
+                                                Mark Shipped
+                                            </button>
+                                        )}
                                     </div>
                                 </td>
                             </motion.tr>
@@ -166,15 +137,66 @@ export default function OrderTable({ orders }: OrderTableProps) {
                 </table>
             </div>
 
-            <PaymentModal
-                order={selectedOrderForVerification}
-                isOpen={!!selectedOrderForVerification}
-                onClose={() => setSelectedOrderForVerification(null)}
-                onVerify={(orderId) => {
-                    updateStatus(orderId, 'confirmed');
-                    setSelectedOrderForVerification(null);
-                }}
-            />
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-4">
+                {orders.map((order) => (
+                    <div key={order.id} className="bg-navy/50 border border-white/10 rounded-lg p-4 space-y-4">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <span className="font-mono text-xs text-gray-500">#{order.id.slice(0, 8)}</span>
+                                <h3 className="font-bold text-white mt-1">{order.customer_name}</h3>
+                                <p className="text-xs text-gray-400">{order.customer_email}</p>
+                            </div>
+                            <StatusBadge status={order.status} />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 border-t border-b border-white/5 py-3">
+                            <div>
+                                <p className="text-xs text-gray-500 mb-1">Amount</p>
+                                <p className="font-mono text-soft-cyan">₹{order.total_amount}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 mb-1">Transaction ID</p>
+                                <div className="flex items-center gap-2">
+                                    <span className="font-mono text-sm text-white/80">{order.upi_transaction_id || 'N/A'}</span>
+                                    {order.upi_transaction_id && (
+                                        <button
+                                            onClick={() => copyToClipboard(order.upi_transaction_id!)}
+                                            className="p-1 hover:bg-white/10 rounded text-gray-500 hover:text-white"
+                                        >
+                                            <Copy size={12} />
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-end gap-2 pt-1">
+                            {order.status !== 'confirmed' && order.status !== 'shipped' && order.status !== 'cancelled' && (
+                                <button
+                                    onClick={() => updateStatus(order.id, 'confirmed')}
+                                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-green-500/10 text-green-400 border border-green-500/20 rounded-lg text-sm font-medium hover:bg-green-500/20 transition-colors"
+                                >
+                                    <Check size={14} />
+                                    Mark Paid
+                                </button>
+                            )}
+                            {order.status === 'confirmed' && (
+                                <button
+                                    onClick={() => updateStatus(order.id, 'shipped')}
+                                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-sm font-medium hover:bg-blue-500/20 transition-colors"
+                                >
+                                    <Truck size={14} />
+                                    Mark Shipped
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                ))}
+                {orders.length === 0 && (
+                    <div className="text-center p-8 text-gray-500">No orders found.</div>
+                )}
+            </div>
         </>
     );
 }

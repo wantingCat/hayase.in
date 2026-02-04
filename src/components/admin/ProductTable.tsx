@@ -75,82 +75,134 @@ export default function ProductTable({ products }: ProductTableProps) {
     };
 
     return (
-        <div className="w-full overflow-hidden rounded-xl border border-white/10 glassmorphism">
-            <table className="w-full text-left border-collapse">
-                <thead className="bg-white/5 text-gray-400 uppercase text-xs tracking-wider">
-                    <tr>
-                        <th className="p-4">Image</th>
-                        <th className="p-4">Name</th>
-                        <th className="p-4">Price</th>
-                        <th className="p-4">Stock</th>
-                        <th className="p-4">Details</th>
-                        <th className="p-4 text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-white/10">
-                    {products.map((product, index) => (
-                        <motion.tr
-                            key={product.id}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
-                            className="text-gray-300"
-                        >
-                            <td className="p-4">
-                                <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-white/10 bg-black/50">
-                                    {product.images && product.images[0] ? (
-                                        <Image
-                                            src={product.images[0]}
-                                            alt={product.name}
-                                            fill
-                                            className="object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-xs text-gray-600">
-                                            No Img
-                                        </div>
-                                    )}
-                                </div>
-                            </td>
-                            <td className="p-4 font-medium text-white">{product.name}</td>
-                            <td className="p-4 font-mono text-soft-cyan">₹{product.price}</td>
-                            <td className="p-4">
-                                <span className={`px-2 py-1 rounded text-xs font-bold ${product.stock > 0 ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
-                                    {product.stock > 0 ? `${product.stock} in stock` : 'Out of Stock'}
-                                </span>
-                            </td>
-                            <td className="p-4 text-sm text-gray-500">
-                                <div className="flex flex-col gap-1">
-                                    <span>{product.manufacturer}</span>
-                                    <span className="text-xs text-gray-600">{product.scale} • {product.condition}</span>
-                                </div>
-                            </td>
-                            <td className="p-4 text-right">
-                                <div className="flex items-center justify-end gap-2">
-                                    <button className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-cyan-400 transition-colors">
-                                        <Edit size={16} />
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(product.id, product.images)}
-                                        disabled={deletingId === product.id}
-                                        className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-red-400 transition-colors disabled:opacity-50"
-                                    >
-                                        {deletingId === product.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
-                                    </button>
-                                </div>
-                            </td>
-                        </motion.tr>
-                    ))}
-                    {products.length === 0 && (
+        <div className="w-full">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-hidden rounded-xl border border-white/10 glassmorphism">
+                <table className="w-full text-left border-collapse">
+                    <thead className="bg-white/5 text-gray-400 uppercase text-xs tracking-wider">
                         <tr>
-                            <td colSpan={6} className="p-8 text-center text-gray-500">
-                                No products found. Add some using the button above.
-                            </td>
+                            <th className="p-4">Image</th>
+                            <th className="p-4">Name</th>
+                            <th className="p-4">Price</th>
+                            <th className="p-4">Stock</th>
+                            <th className="p-4">Details</th>
+                            <th className="p-4 text-right">Actions</th>
                         </tr>
-                    )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody className="divide-y divide-white/10">
+                        {products.map((product, index) => (
+                            <motion.tr
+                                key={product.id}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                                whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
+                                className="text-gray-300"
+                            >
+                                <td className="p-4">
+                                    <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-white/10 bg-black/50">
+                                        {product.images && product.images[0] ? (
+                                            <Image
+                                                src={product.images[0]}
+                                                alt={product.name}
+                                                fill
+                                                className="object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-xs text-gray-600">
+                                                No Img
+                                            </div>
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="p-4 font-medium text-white">{product.name}</td>
+                                <td className="p-4 font-mono text-soft-cyan">₹{product.price}</td>
+                                <td className="p-4">
+                                    <span className={`px-2 py-1 rounded text-xs font-bold ${product.stock > 0 ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
+                                        {product.stock > 0 ? `${product.stock} in stock` : 'Out of Stock'}
+                                    </span>
+                                </td>
+                                <td className="p-4 text-sm text-gray-500">
+                                    <div className="flex flex-col gap-1">
+                                        <span>{product.manufacturer}</span>
+                                        <span className="text-xs text-gray-600">{product.scale} • {product.condition}</span>
+                                    </div>
+                                </td>
+                                <td className="p-4 text-right">
+                                    <div className="flex items-center justify-end gap-2">
+                                        <button className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-cyan-400 transition-colors">
+                                            <Edit size={16} />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(product.id, product.images)}
+                                            disabled={deletingId === product.id}
+                                            className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-red-400 transition-colors disabled:opacity-50"
+                                        >
+                                            {deletingId === product.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                                        </button>
+                                    </div>
+                                </td>
+                            </motion.tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-4">
+                {products.map((product) => (
+                    <div key={product.id} className="bg-navy/50 border border-white/10 rounded-lg p-4 space-y-4">
+                        <div className="flex gap-4">
+                            <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-white/10 bg-black/50 flex-shrink-0">
+                                {product.images && product.images[0] ? (
+                                    <Image
+                                        src={product.images[0]}
+                                        alt={product.name}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-xs text-gray-600">
+                                        No Img
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h3 className="font-bold text-white truncate">{product.name}</h3>
+                                <p className="text-sm text-gray-400">{product.manufacturer}</p>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <span className="font-mono text-soft-cyan">₹{product.price}</span>
+                                    <span className="text-xs text-gray-600">•</span>
+                                    <span className={`text-xs font-bold ${product.stock > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                        {product.stock > 0 ? `${product.stock} In Stock` : 'Out of Stock'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-between border-t border-white/5 pt-4">
+                            <div className="text-xs text-gray-500">
+                                {product.scale} • {product.condition}
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-cyan-400 transition-colors">
+                                    <Edit size={18} />
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(product.id, product.images)}
+                                    disabled={deletingId === product.id}
+                                    className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-red-400 transition-colors disabled:opacity-50"
+                                >
+                                    {deletingId === product.id ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+                {products.length === 0 && (
+                    <div className="text-center p-8 text-gray-500">No products found.</div>
+                )}
+            </div>
         </div>
     );
 }

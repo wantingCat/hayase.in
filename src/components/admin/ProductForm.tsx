@@ -111,6 +111,7 @@ export default function ProductForm() {
                 .from('products')
                 .insert({
                     ...data,
+                    condition: 'New',
                     images: imageUrls,
                     price: parseFloat(data.price.toString()), // Ensure number
                     stock: parseInt(data.stock.toString()), // Ensure number
@@ -263,7 +264,7 @@ export default function ProductForm() {
                                         <div className="space-y-2">
                                             <label className="text-sm text-gray-300">Manufacturer</label>
                                             <input
-                                                {...register("manufacturer", { required: "Manufacturer is required" })}
+                                                {...register("manufacturer")}
                                                 className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyber-pink/50 transition-colors"
                                                 placeholder="e.g. Good Smile"
                                             />
@@ -278,16 +279,7 @@ export default function ProductForm() {
                                         </div>
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <label className="text-sm text-gray-300">Condition</label>
-                                        <select
-                                            {...register("condition")}
-                                            className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyber-pink/50 transition-colors"
-                                        >
-                                            <option value="New">New</option>
-                                            <option value="Pre-owned">Pre-owned</option>
-                                        </select>
-                                    </div>
+
 
                                     <div className="space-y-2">
                                         <label className="text-sm text-gray-300">Description</label>

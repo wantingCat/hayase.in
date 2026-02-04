@@ -1,10 +1,12 @@
 "use client";
 
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingCart, LogOut } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, LogOut, Menu, X } from "lucide-react";
 import clsx from "clsx";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -14,18 +16,29 @@ const navItems = [
 
 export default function Sidebar() {
     const pathname = usePathname();
+    const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-    return (
-        <motion.aside
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            className="w-64 h-screen fixed left-0 top-0 bg-navy/90 backdrop-blur-md border-r border-white/10 flex flex-col z-50 text-foreground"
-        >
-            <div className="p-6 border-b border-white/10">
-                <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyber-pink to-soft-cyan">
-                    HAYASE
-                </h1>
-                <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest">Admin Portal</p>
+    // Close sidebar on route change
+    useEffect(() => {
+        setIsMobileOpen(false);
+    }, [pathname]);
+
+    const SidebarContent = () => (
+        <>
+            <div className="p-6 border-b border-white/10 flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyber-pink to-soft-cyan">
+                        HAYASE
+                    </h1>
+                    <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest">Admin Portal</p>
+                </div>
+                {/* Mobile Close Button */}
+                <button
+                    onClick={() => setIsMobileOpen(false)}
+                    className="md:hidden p-2 text-gray-400 hover:text-white"
+                >
+                    <X size={24} />
+                </button>
             </div>
 
             <nav className="flex-1 p-4 space-y-2">
@@ -64,6 +77,51 @@ export default function Sidebar() {
                     <span className="font-medium">Logout</span>
                 </button>
             </div>
-        </motion.aside>
+        </>
+    );
+
+    return (
+        <>
+            {/* Mobile Header */}
+            <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-navy/90 backdrop-blur-md border-b border-white/10 z-40 flex items-center justify-between px-4">
+                <button
+                    onClick={() => setIsMobileOpen(true)}
+                    className="p-2 text-white"
+                >
+                    <Menu size={24} />
+                </button>
+                <span className="font-bold text-lg text-white">Admin Portal</span>
+                <div className="w-10" /> {/* Spacer for centering */}
+            </div>
+
+            {/* Desktop Sidebar */}
+            <aside className="hidden md:flex w-64 h-screen fixed left-0 top-0 bg-navy/90 backdrop-blur-md border-r border-white/10 flex-col z-50 text-foreground">
+                <SidebarContent />
+            </aside>
+
+            {/* Mobile Sidebar Drawer */}
+            <AnimatePresence>
+                {isMobileOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsMobileOpen(false)}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] md:hidden"
+                        />
+                        <motion.aside
+                            initial={{ x: "-100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "-100%" }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            className="fixed inset-y-0 left-0 w-[80%] max-w-xs bg-navy border-r border-white/10 z-[70] flex flex-col md:hidden"
+                        >
+                            <SidebarContent />
+                        </motion.aside>
+                    </>
+                )}
+            </AnimatePresence>
+        </>
     );
 }
