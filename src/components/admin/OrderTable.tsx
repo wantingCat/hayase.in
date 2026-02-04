@@ -4,7 +4,6 @@ import { Order } from "@/types";
 import { motion } from "framer-motion";
 import { Copy, Check, Truck } from "lucide-react";
 import clsx from "clsx";
-import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -27,7 +26,7 @@ export default function OrderTable({ orders }: OrderTableProps) {
             if (error) throw error;
             toast.success(`Order updated to ${newStatus}`);
             router.refresh();
-        } catch (error: any) {
+        } catch (error) {
             console.error("Error updating order:", error);
             toast.error("Failed to update status");
         }

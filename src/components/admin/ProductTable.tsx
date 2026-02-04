@@ -20,7 +20,7 @@ export default function ProductTable({ products }: ProductTableProps) {
     const router = useRouter();
     const [deletingId, setDeletingId] = useState<string | null>(null);
 
-    const handleDelete = async (id: string, _unusedImages: string[] | null) => {
+    const handleDelete = async (id: string) => {
         if (!confirm("Are you sure you want to delete this product? This action cannot be undone.")) return;
 
         setDeletingId(id);
@@ -66,9 +66,10 @@ export default function ProductTable({ products }: ProductTableProps) {
 
             toast.success("Product deleted successfully");
             router.refresh();
-        } catch (error: any) {
+        } catch (error) {
             console.error("Error deleting product:", error);
-            toast.error(error.message || "Failed to delete product");
+            const message = error instanceof Error ? error.message : "Failed to delete product";
+            toast.error(message);
         } finally {
             setDeletingId(null);
         }
@@ -134,7 +135,7 @@ export default function ProductTable({ products }: ProductTableProps) {
                                             <Edit size={16} />
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(product.id, product.images)}
+                                            onClick={() => handleDelete(product.id)}
                                             disabled={deletingId === product.id}
                                             className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-red-400 transition-colors disabled:opacity-50"
                                         >
@@ -189,7 +190,7 @@ export default function ProductTable({ products }: ProductTableProps) {
                                     <Edit size={18} />
                                 </button>
                                 <button
-                                    onClick={() => handleDelete(product.id, product.images)}
+                                    onClick={() => handleDelete(product.id)}
                                     disabled={deletingId === product.id}
                                     className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-red-400 transition-colors disabled:opacity-50"
                                 >

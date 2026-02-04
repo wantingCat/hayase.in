@@ -46,8 +46,9 @@ export default function LoginPage() {
             router.push("/admin");
             router.refresh();
 
-        } catch (err: any) {
-            setError(err.message || "Invalid credentials");
+        } catch (err) {
+            const message = err instanceof Error ? err.message : "Invalid credentials";
+            setError(message);
         } finally {
             setLoading(false);
         }

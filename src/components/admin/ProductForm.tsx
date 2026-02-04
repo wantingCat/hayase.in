@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Upload, Loader2, Plus, Image as ImageIcon, Trash2 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Image from "next/image";
-import clsx from "clsx";
 import imageCompression from 'browser-image-compression';
 
 interface ProductFormData {
@@ -29,7 +28,7 @@ export default function ProductForm() {
     const [uploading, setUploading] = useState(false);
 
     const router = useRouter();
-    const { register, handleSubmit, reset, control, formState: { errors, isSubmitting } } = useForm<ProductFormData>({
+    const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<ProductFormData>({
         defaultValues: {
             condition: "New"
         }
@@ -124,9 +123,10 @@ export default function ProductForm() {
             resetInternal();
             router.refresh();
 
-        } catch (error: any) {
+        } catch (error) {
             console.error(error);
-            toast.error(error.message || "Failed to create product");
+            const message = error instanceof Error ? error.message : "Failed to create product";
+            toast.error(message);
             toast.dismiss("compression-toast");
             toast.dismiss("upload-toast");
         } finally {
@@ -138,6 +138,7 @@ export default function ProductForm() {
         reset();
         setImages([]);
         setImagePreviews([]);
+
     };
 
     return (
