@@ -23,3 +23,16 @@ export interface Order {
     status: 'pending_verification' | 'confirmed' | 'shipped' | 'cancelled';
     upi_transaction_id: string | null;
 }
+
+export interface Coupon {
+    id: string;
+    code: string;
+    discount_type: 'percent' | 'fixed';
+    discount_value: number;
+    min_order_value: number;
+    max_uses: number | null;
+    current_uses: number;
+    expires_at: string | null;
+    is_active: boolean;
+    created_at: string;
+}
