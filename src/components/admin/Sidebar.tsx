@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingCart, LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, LogOut, Menu, X, Ticket } from "lucide-react";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -12,6 +12,7 @@ const navItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Products", href: "/admin/products", icon: Package },
     { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
+    { name: "Coupons", href: "/admin/coupons", icon: Ticket },
 ];
 
 export default function Sidebar() {
