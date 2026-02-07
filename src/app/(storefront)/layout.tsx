@@ -1,4 +1,5 @@
 import Navbar from "@/components/storefront/Navbar";
+import { Footer } from "@/components/storefront/Footer";
 import { CartProvider } from "@/context/CartContext";
 import CartDrawer from "@/components/storefront/CartDrawer";
 
@@ -17,6 +18,7 @@ export default function StorefrontLayout({
                 <main className="pb-12 w-full min-h-screen flex flex-col">
                     {children}
                 </main>
+                <Footer />
                 <CartDrawer />
             </div>
         </CartProvider>

@@ -27,6 +27,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
 
+
+
     // Load from localStorage on mount
     useEffect(() => {
         const savedCart = localStorage.getItem("hayase-cart");

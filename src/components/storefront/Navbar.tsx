@@ -27,7 +27,7 @@ export default function Navbar() {
     return (
         <header>
             <nav
-                className="fixed top-5 inset-x-0 mx-auto w-[90%] max-w-5xl z-50 flex items-center justify-between px-6 py-4 rounded-full backdrop-blur-xl bg-[#0a0e17]/80 border border-white/10 shadow-2xl transition-all duration-300"
+                className="fixed top-5 inset-x-0 mx-auto w-[90%] max-w-5xl z-[9999] flex items-center justify-between px-6 py-4 rounded-full backdrop-blur-xl bg-[#0a0e17]/80 border border-white/10 shadow-2xl transition-all duration-300 pointer-events-auto"
             >
                 {/* Logo - Compact on mobile */}
                 <Link href="/" className="flex items-center gap-1 font-bold text-lg tracking-tighter text-white mr-4 shrink-0">
@@ -69,7 +69,7 @@ export default function Navbar() {
                         className="relative group cursor-pointer"
                     >
                         <div className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
-                            <ShoppingCart size={18} className="text-white group-hover:text-cyber-pink transition-colors" />
+                            <ShoppingCart size={18} className="text-white group-hover:text-cyber-pink transition-colors pointer-events-none" />
                         </div>
                         {totalItems > 0 && (
                             <div className="absolute -top-1 -right-1 w-5 h-5 bg-cyber-pink rounded-full border-2 border-[#0a0e17] flex items-center justify-center text-[10px] font-bold text-white">

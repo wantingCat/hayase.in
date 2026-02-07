@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { Search, Filter, MoreVertical, Loader2, ExternalLink, Calendar, User, DollarSign, Package } from "lucide-react";
+import { Search, Loader2, ExternalLink, DollarSign, Package } from "lucide-react";
 import { format } from "date-fns";
 import clsx from "clsx";
 

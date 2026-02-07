@@ -56,7 +56,7 @@ export default function RequestPage() {
     }
 
     return (
-        <div className="min-h-[80vh] flex flex-col items-center justify-center py-12 pt-32 px-4 w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div className="min-h-screen flex flex-col items-center justify-center py-12 pt-40 px-4 w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -68,7 +68,7 @@ export default function RequestPage() {
                         <span className="text-xs font-bold uppercase tracking-wider">Concierge Service</span>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">The Hunt Begins.</h1>
-                    <p className="text-lg text-gray-400">Looking for a specific figure? We'll find it for you.</p>
+                    <p className="text-lg text-gray-400">Looking for a specific figure? We&apos;ll find it for you.</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="bg-[#0a0e17]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl space-y-6">
