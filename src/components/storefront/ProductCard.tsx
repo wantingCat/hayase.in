@@ -15,7 +15,7 @@ const getImageUrl = (url: string) => {
 export default function ProductCard({ product }: ProductCardProps) {
     return (
         <Link
-            href={`/shop/${product.id}`}
+            href={`/product/${product.id}`}
             className="group relative block"
         >
             <div className="aspect-[3/4] overflow-hidden rounded-xl bg-gray-900 border border-white/10 relative">

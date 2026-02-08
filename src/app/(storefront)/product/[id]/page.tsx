@@ -14,16 +14,18 @@ export default async function ProductPage({ params }: { params: { id: string } }
     const supabase = createClient();
 
     // 1. Fetch current product
+    console.log("Fetching product with ID:", params.id);
     const { data: product, error } = await supabase
         .from("products")
         .select("*")
         .eq("id", params.id)
         .single();
 
-    if (error || !product) {
-        if (error?.code !== 'PGRST116') {
-            console.error("Supabase Error:", error);
-        }
+    if (error) {
+        console.error("Supabase Error:", error);
+    }
+
+    if (!product) {
         return notFound();
     }
 

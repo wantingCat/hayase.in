@@ -4,16 +4,28 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingCart, LogOut, Menu, X, Ticket, Search } from "lucide-react";
+import {
+    LayoutDashboard,
+    ShoppingBag,
+    ShoppingCart,
+    Menu,
+    X,
+    LogOut,
+    Search,
+    Ticket,
+    Settings
+} from "lucide-react";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-    { name: "Products", href: "/admin/products", icon: Package },
+    { name: "Products", href: "/admin/products", icon: ShoppingBag },
     { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
     { name: "Requests", href: "/admin/requests", icon: Search },
     { name: "Coupons", href: "/admin/coupons", icon: Ticket },
+    // New "Settings" item with sub-items
+    { name: "Payment Settings", href: "/admin/settings/payment", icon: Settings },
 ];
 
 const SidebarContent = ({ pathname, onClose }: { pathname: string; onClose?: () => void }) => (
