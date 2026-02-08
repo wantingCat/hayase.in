@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
-import Image from "next/image";
+
 import Link from "next/link";
 import { Product } from "@/types";
 import ProductGallery from "@/components/storefront/ProductGallery";
@@ -100,8 +100,8 @@ export default async function ProductPage({ params }: { params: { id: string } }
                                 ₹{currentProduct.price.toLocaleString('en-IN')}
                             </span>
                             <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold border ${currentProduct.stock > 0
-                                    ? 'bg-green-500/10 border-green-500/20 text-green-400'
-                                    : 'bg-red-500/10 border-red-500/20 text-red-400'
+                                ? 'bg-green-500/10 border-green-500/20 text-green-400'
+                                : 'bg-red-500/10 border-red-500/20 text-red-400'
                                 }`}>
                                 <div className={`w-2 h-2 rounded-full ${currentProduct.stock > 0 ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
                                 {currentProduct.stock > 0 ? 'In Stock' : 'Out of Stock'}

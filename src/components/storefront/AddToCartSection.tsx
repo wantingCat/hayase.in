@@ -6,7 +6,6 @@ import { useCart } from "@/context/CartContext";
 import { Minus, Plus, ShoppingBag, Heart, Share2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 
 interface AddToCartSectionProps {
     product: Product;

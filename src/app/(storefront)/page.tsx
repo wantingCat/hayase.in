@@ -1,4 +1,4 @@
-import Navbar from "@/components/storefront/Navbar";
+
 import FeaturedProducts from "@/components/storefront/FeaturedProducts";
 import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
