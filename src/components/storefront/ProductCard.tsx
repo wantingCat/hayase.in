@@ -6,6 +6,12 @@ interface ProductCardProps {
     product: Product;
 }
 
+const getImageUrl = (url: string) => {
+    if (!url) return '/placeholder.png'; // Handled by fallback UI, but good for safety
+    if (url.startsWith('http')) return url;
+    return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${url}`;
+};
+
 export default function ProductCard({ product }: ProductCardProps) {
     return (
         <Link
@@ -15,7 +21,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             <div className="aspect-[3/4] overflow-hidden rounded-xl bg-gray-900 border border-white/10 relative">
                 {product.images && product.images[0] ? (
                     <Image
-                        src={product.images[0]}
+                        src={getImageUrl(product.images[0])}
                         alt={product.name}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-110"

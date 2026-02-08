@@ -7,6 +7,7 @@ import { Edit, Trash2 } from "lucide-react";
 
 interface ProductTableProps {
     products: Product[];
+    onEdit: (product: Product) => void;
 }
 
 import { createClient } from "@/utils/supabase/client";
@@ -15,7 +16,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
-export default function ProductTable({ products }: ProductTableProps) {
+export default function ProductTable({ products, onEdit }: ProductTableProps) {
     const supabase = createClient();
     const router = useRouter();
     const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -131,7 +132,10 @@ export default function ProductTable({ products }: ProductTableProps) {
                                 </td>
                                 <td className="p-4 text-right">
                                     <div className="flex items-center justify-end gap-2">
-                                        <button className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-cyan-400 transition-colors">
+                                        <button
+                                            onClick={() => onEdit(product)}
+                                            className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-cyan-400 transition-colors"
+                                        >
                                             <Edit size={16} />
                                         </button>
                                         <button
@@ -186,7 +190,10 @@ export default function ProductTable({ products }: ProductTableProps) {
                                 {product.scale} • {product.condition}
                             </div>
                             <div className="flex items-center gap-2">
-                                <button className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-cyan-400 transition-colors">
+                                <button
+                                    onClick={() => onEdit(product)}
+                                    className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-cyan-400 transition-colors"
+                                >
                                     <Edit size={18} />
                                 </button>
                                 <button

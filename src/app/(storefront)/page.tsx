@@ -2,11 +2,12 @@ import Navbar from "@/components/storefront/Navbar";
 import FeaturedProducts from "@/components/storefront/FeaturedProducts";
 import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/utils/supabase/server";
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
+  const supabase = createClient();
   const { data: products } = await supabase
     .from('products')
     .select('*')

@@ -10,7 +10,7 @@ export interface CartItem extends Product {
 
 interface CartContextType {
     items: CartItem[];
-    addItem: (product: Product) => void;
+    addItem: (product: Product, quantity?: number) => void;
     removeItem: (productId: string) => void;
     updateQuantity: (productId: string, quantity: number) => void;
     clearCart: () => void;
@@ -26,8 +26,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const [items, setItems] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
-
-
 
     // Load from localStorage on mount
     useEffect(() => {
@@ -49,19 +47,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }
     }, [items, isLoaded]);
 
-    const addItem = (product: Product) => {
+    const addItem = (product: Product, quantity = 1) => {
         setItems((prev) => {
             const existing = prev.find((item) => item.id === product.id);
             if (existing) {
-                toast.success("Updated quantity in cart");
+                toast.success(`Updated quantity in cart (+${quantity})`);
                 return prev.map((item) =>
                     item.id === product.id
-                        ? { ...item, quantity: item.quantity + 1 }
+                        ? { ...item, quantity: item.quantity + quantity }
                         : item
                 );
             }
-            toast.success("Added to cart");
-            return [...prev, { ...product, quantity: 1 }];
+            toast.success(`Added ${quantity} item(s) to cart`);
+            return [...prev, { ...product, quantity }];
         });
         setIsCartOpen(true);
     };

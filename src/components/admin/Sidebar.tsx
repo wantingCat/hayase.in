@@ -16,6 +16,64 @@ const navItems = [
     { name: "Coupons", href: "/admin/coupons", icon: Ticket },
 ];
 
+const SidebarContent = ({ pathname, onClose }: { pathname: string; onClose?: () => void }) => (
+    <>
+        <div className="p-6 border-b border-white/10 flex items-center justify-between">
+            <div>
+                <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyber-pink to-soft-cyan">
+                    HAYASE
+                </h1>
+                <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest">Admin Portal</p>
+            </div>
+            {/* Mobile Close Button */}
+            <button
+                onClick={onClose}
+                className="md:hidden p-2 text-gray-400 hover:text-white"
+            >
+                <X size={24} />
+            </button>
+        </div>
+
+        <nav className="flex-1 p-4 space-y-2">
+            {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                const Icon = item.icon;
+
+                return (
+                    <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={onClose}
+                        className={clsx(
+                            "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group relative overflow-hidden",
+                            isActive
+                                ? "text-white shadow-[0_0_15px_rgba(255,0,255,0.3)] bg-white/5 border border-cyber-pink/30"
+                                : "text-gray-400 hover:text-white hover:bg-white/5"
+                        )}
+                    >
+                        {isActive && (
+                            <motion.div
+                                layoutId="activeTab"
+                                className="absolute inset-0 bg-cyber-pink/10 rounded-lg"
+                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            />
+                        )}
+                        <Icon size={20} className={clsx("relative z-10 transition-colors", isActive ? "text-cyber-pink" : "group-hover:text-soft-cyan")} />
+                        <span className="relative z-10 font-medium">{item.name}</span>
+                    </Link>
+                );
+            })}
+        </nav>
+
+        <div className="p-4 border-t border-white/10">
+            <button className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                <LogOut size={20} />
+                <span className="font-medium">Logout</span>
+            </button>
+        </div>
+    </>
+);
+
 export default function Sidebar() {
     const pathname = usePathname();
     const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -25,65 +83,8 @@ export default function Sidebar() {
         setIsMobileOpen(false);
     }, [pathname]);
 
-    const SidebarContent = () => (
-        <>
-            <div className="p-6 border-b border-white/10 flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyber-pink to-soft-cyan">
-                        HAYASE
-                    </h1>
-                    <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest">Admin Portal</p>
-                </div>
-                {/* Mobile Close Button */}
-                <button
-                    onClick={() => setIsMobileOpen(false)}
-                    className="md:hidden p-2 text-gray-400 hover:text-white"
-                >
-                    <X size={24} />
-                </button>
-            </div>
-
-            <nav className="flex-1 p-4 space-y-2">
-                {navItems.map((item) => {
-                    const isActive = pathname === item.href;
-                    const Icon = item.icon;
-
-                    return (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={clsx(
-                                "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 group relative overflow-hidden",
-                                isActive
-                                    ? "text-white shadow-[0_0_15px_rgba(255,0,255,0.3)] bg-white/5 border border-cyber-pink/30"
-                                    : "text-gray-400 hover:text-white hover:bg-white/5"
-                            )}
-                        >
-                            {isActive && (
-                                <motion.div
-                                    layoutId="activeTab"
-                                    className="absolute inset-0 bg-cyber-pink/10 rounded-lg"
-                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                />
-                            )}
-                            <Icon size={20} className={clsx("relative z-10 transition-colors", isActive ? "text-cyber-pink" : "group-hover:text-soft-cyan")} />
-                            <span className="relative z-10 font-medium">{item.name}</span>
-                        </Link>
-                    );
-                })}
-            </nav>
-
-            <div className="p-4 border-t border-white/10">
-                <button className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors">
-                    <LogOut size={20} />
-                    <span className="font-medium">Logout</span>
-                </button>
-            </div>
-        </>
-    );
-
     return (
-        <>
+        <div>
             {/* Mobile Header */}
             <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-navy/90 backdrop-blur-md border-b border-white/10 z-40 flex items-center justify-between px-4">
                 <button
@@ -98,7 +99,7 @@ export default function Sidebar() {
 
             {/* Desktop Sidebar */}
             <aside className="hidden md:flex w-64 h-screen fixed left-0 top-0 bg-navy/90 backdrop-blur-md border-r border-white/10 flex-col z-50 text-foreground">
-                <SidebarContent />
+                <SidebarContent pathname={pathname} />
             </aside>
 
             {/* Mobile Sidebar Drawer */}
@@ -119,11 +120,11 @@ export default function Sidebar() {
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                             className="fixed inset-y-0 left-0 w-[80%] max-w-xs bg-navy border-r border-white/10 z-[70] flex flex-col md:hidden"
                         >
-                            <SidebarContent />
+                            <SidebarContent pathname={pathname} onClose={() => setIsMobileOpen(false)} />
                         </motion.aside>
                     </>
                 )}
             </AnimatePresence>
-        </>
+        </div>
     );
 }

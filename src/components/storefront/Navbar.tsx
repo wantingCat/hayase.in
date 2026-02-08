@@ -68,13 +68,13 @@ export default function Navbar() {
                         onClick={() => setIsCartOpen(true)}
                         className="relative group cursor-pointer"
                     >
-                        <div className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors border border-white/10">
+                        <span className="p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors border border-white/10 block">
                             <ShoppingCart size={18} className="text-white group-hover:text-cyber-pink transition-colors pointer-events-none" />
-                        </div>
+                        </span>
                         {totalItems > 0 && (
-                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-cyber-pink rounded-full border-2 border-[#0a0e17] flex items-center justify-center text-[10px] font-bold text-white">
+                            <span className="absolute -top-1 -right-1 w-5 h-5 bg-cyber-pink rounded-full border-2 border-[#0a0e17] flex items-center justify-center text-[10px] font-bold text-white">
                                 {totalItems > 9 ? '9+' : totalItems}
-                            </div>
+                            </span>
                         )}
                     </button>
 

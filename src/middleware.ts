@@ -47,6 +47,13 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/admin', request.url))
     }
 
+    // Handle /admin/login specificaly to prevent 404
+    if (request.nextUrl.pathname === '/admin/login') {
+        const url = request.nextUrl.clone()
+        url.pathname = user ? '/admin' : '/login'
+        return NextResponse.redirect(url)
+    }
+
     return response
 }
 

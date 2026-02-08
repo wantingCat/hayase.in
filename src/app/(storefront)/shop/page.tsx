@@ -1,10 +1,11 @@
 import ProductCard from "@/components/storefront/ProductCard";
-import { supabase } from "@/lib/supabaseClient";
+import { createClient } from "@/utils/supabase/server";
 import { Ghost, Search } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
 export default async function ShopPage() {
+    const supabase = createClient();
     const { data: products } = await supabase
         .from('products')
         .select('*')
