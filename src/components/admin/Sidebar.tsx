@@ -13,7 +13,8 @@ import {
     LogOut,
     Search,
     Ticket,
-    Settings
+    Settings,
+    Star
 } from "lucide-react";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,6 +24,7 @@ const navItems = [
     { name: "Products", href: "/admin/products", icon: ShoppingBag },
     { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
     { name: "Requests", href: "/admin/requests", icon: Search },
+    { name: "Reviews", href: "/admin/reviews", icon: Star },
     { name: "Coupons", href: "/admin/coupons", icon: Ticket },
     // New "Settings" item with sub-items
     { name: "Payment Settings", href: "/admin/settings/payment", icon: Settings },

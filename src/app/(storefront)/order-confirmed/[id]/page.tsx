@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { CheckCircle, ShoppingBag } from 'lucide-react';
 
-export default function OrderConfirmedPage({ params }: { params: { id: string } }) {
+export default async function OrderConfirmedPage(props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     return (
         <div className="min-h-screen pt-32 flex flex-col items-center justify-center text-center px-4 bg-navy text-foreground">
             <div className="w-24 h-24 bg-green-500/10 rounded-full flex items-center justify-center mb-6 animate-bounce-in">

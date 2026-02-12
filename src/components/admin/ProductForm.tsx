@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Upload, Loader2, Image as ImageIcon, Trash2 } from "lucide-react";
+import { X, Upload, Loader2, Image as ImageIcon, Trash2, Tag, ChevronDown } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -11,14 +11,17 @@ import Image from "next/image";
 import imageCompression from 'browser-image-compression';
 import { Product } from "@/types";
 
+const CATEGORIES = ['Scale Figure', 'Prize Figure', 'Nendoroid', 'Figma', 'Acrylic Stand', 'Keychain', 'Mousepad', 'Plushie'];
+
 interface ProductFormData {
     name: string;
     price: number;
     stock: number;
     manufacturer?: string;
     scale?: string;
-    condition: "New" | "Pre-owned";
     description?: string;
+    category?: string;
+    tags?: string; // Comma separated string for input
 }
 
 interface ProductFormProps {
@@ -35,11 +38,13 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
     const [uploading, setUploading] = useState(false);
 
     const router = useRouter();
-    const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<ProductFormData>({
+    const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<ProductFormData>({
         defaultValues: {
-            condition: "New"
+            category: "Scale Figure"
         }
     });
+
+    const selectedCategory = watch("category");
 
     // Reset form when product changes or modal opens/closes
     useEffect(() => {
@@ -51,8 +56,9 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
                 setValue("stock", product.stock);
                 setValue("manufacturer", product.manufacturer || "");
                 setValue("scale", product.scale || "");
-                setValue("condition", (product.condition as "New" | "Pre-owned") || "New");
                 setValue("description", product.description || "");
+                setValue("category", product.category || "Scale Figure");
+                setValue("tags", product.tags?.join(", ") || "");
 
                 setExistingImages(product.images || []);
                 setImages([]);
@@ -60,7 +66,7 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
             } else {
                 // Add mode
                 reset({
-                    condition: "New"
+                    category: "Scale Figure"
                 });
                 setExistingImages([]);
                 setImages([]);
@@ -105,7 +111,7 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
 
             // Compress Images
             if (images.length > 0) {
-                toast.info("Compressing images...", { id: "compression-toast" }); // Show loading toast
+                toast.info("Compressing images...", { id: "compression-toast" });
 
                 for (const file of images) {
                     const options = {
@@ -119,7 +125,6 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
                         compressedImages.push(compressedFile);
                     } catch (error) {
                         console.error("Compression failed for", file.name, error);
-                        // Fallback to original file if compression fails
                         compressedImages.push(file);
                     }
                 }
@@ -149,16 +154,33 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
             // Combine existing images with new ones
             const finalImages = [...existingImages, ...newImageUrls];
 
+            // Process tags
+            const tagsArray = data.tags
+                ? data.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
+                : [];
+
+            // Handle scale based on category
+            const isScaleFigure = data.category === 'Scale Figure';
+            const scaleValue = isScaleFigure ? data.scale : null;
+
+            const productData = {
+                name: data.name,
+                price: parseFloat(data.price.toString()),
+                stock: parseInt(data.stock.toString()),
+                manufacturer: data.manufacturer,
+                scale: scaleValue,
+                condition: "New", // Force condition to New
+                description: data.description,
+                category: data.category,
+                tags: tagsArray,
+                images: finalImages,
+            };
+
             if (product?.id) {
                 // Update existing product
                 const { error: updateError } = await supabase
                     .from('products')
-                    .update({
-                        ...data,
-                        images: finalImages,
-                        price: parseFloat(data.price.toString()),
-                        stock: parseInt(data.stock.toString()),
-                    })
+                    .update(productData)
                     .eq('id', product.id);
 
                 if (updateError) throw updateError;
@@ -167,12 +189,7 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
                 // Create new product
                 const { error: insertError } = await supabase
                     .from('products')
-                    .insert({
-                        ...data,
-                        images: finalImages,
-                        price: parseFloat(data.price.toString()),
-                        stock: parseInt(data.stock.toString()),
-                    });
+                    .insert(productData);
 
                 if (insertError) throw insertError;
                 toast.success("Product created successfully!");
@@ -277,7 +294,7 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
                                 </div>
                             </div>
 
-                            {/* Initial Info */}
+                            {/* Basic Info */}
                             <div className="space-y-4">
                                 <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider border-b border-white/5 pb-2">Basic Info</h3>
 
@@ -293,6 +310,22 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
+                                        <label className="text-sm text-gray-300">Category</label>
+                                        <div className="relative">
+                                            <select
+                                                {...register("category", { required: "Category is required" })}
+                                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyber-pink/50 transition-colors appearance-none"
+                                            >
+                                                {CATEGORIES.map(cat => (
+                                                    <option key={cat} value={cat} className="bg-navy text-white">
+                                                        {cat}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
                                         <label className="text-sm text-gray-300">Price (₹)</label>
                                         <input
                                             type="number"
@@ -303,6 +336,9 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
                                         />
                                         {errors.price && <p className="text-red-400 text-xs">{errors.price.message}</p>}
                                     </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <label className="text-sm text-gray-300">Stock</label>
                                         <input
@@ -313,14 +349,6 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
                                         />
                                         {errors.stock && <p className="text-red-400 text-xs">{errors.stock.message}</p>}
                                     </div>
-                                </div>
-                            </div>
-
-                            {/* Details */}
-                            <div className="space-y-4">
-                                <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider border-b border-white/5 pb-2">Details</h3>
-
-                                <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <label className="text-sm text-gray-300">Manufacturer</label>
                                         <input
@@ -329,13 +357,42 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
                                             placeholder="e.g. Good Smile"
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm text-gray-300">Scale</label>
-                                        <input
-                                            {...register("scale")}
-                                            className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyber-pink/50 transition-colors"
-                                            placeholder="e.g. 1/7"
-                                        />
+                                </div>
+                            </div>
+
+                            {/* Details */}
+                            <div className="space-y-4">
+                                <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider border-b border-white/5 pb-2">Details</h3>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <AnimatePresence mode="popLayout">
+                                        {selectedCategory === 'Scale Figure' && (
+                                            <motion.div
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: "auto" }}
+                                                exit={{ opacity: 0, height: 0 }}
+                                                className="space-y-2 overflow-hidden"
+                                            >
+                                                <label className="text-sm text-gray-300">Scale</label>
+                                                <input
+                                                    {...register("scale")}
+                                                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-cyber-pink/50 transition-colors"
+                                                    placeholder="e.g. 1/7"
+                                                />
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+
+                                    <div className="space-y-2 col-span-2 sm:col-span-1">
+                                        <label className="text-sm text-gray-300">Tags (comma separated)</label>
+                                        <div className="relative">
+                                            <input
+                                                {...register("tags")}
+                                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2.5 pl-10 text-white focus:outline-none focus:border-cyber-pink/50 transition-colors"
+                                                placeholder="e.g. Anime, Hololive, Miku"
+                                            />
+                                            <Tag size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                        </div>
                                     </div>
                                 </div>
 
@@ -374,3 +431,4 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
         </AnimatePresence>
     );
 }
+

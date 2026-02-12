@@ -1,13 +1,13 @@
-
-import FeaturedProducts from "@/components/storefront/FeaturedProducts";
 import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
+import ProductCard from "@/components/storefront/ProductCard";
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function Home() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: products } = await supabase
     .from('products')
     .select('*')
@@ -30,7 +30,6 @@ export default async function Home() {
       <div className="relative z-10">
 
 
-        {/* Hero Section */}
         <section className={`relative w-full flex items-center justify-center overflow-hidden pt-32 ${isEmpty ? 'min-h-[60vh]' : 'h-[85vh]'}`}>
 
           <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
@@ -82,8 +81,45 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Featured Section */}
-        {!isEmpty && <FeaturedProducts products={featuredProducts} />}
+        {/* New Arrivals Section */}
+        {!isEmpty && (
+          <section className="py-20 px-4 max-w-7xl mx-auto">
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <h2 className="text-3xl font-bold text-white mb-2">New Arrivals</h2>
+                <p className="text-gray-400">Fresh from Japan, just for you.</p>
+              </div>
+              <Link href="/shop" className="text-cyber-cyan hover:text-white transition-colors flex items-center gap-1 text-sm font-bold">
+                View All <ArrowRight size={16} />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {featuredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Newsletter */}
+        <section className="py-24 bg-gradient-to-t from-black to-transparent border-t border-white/5 relative overflow-hidden">
+          <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-cyber-pink/5 to-transparent opacity-50 pointer-events-none" />
+          <div className="relative z-10 max-w-xl mx-auto px-4 text-center">
+            <h2 className="text-3xl font-bold text-white mb-4">Join the Hunter Association</h2>
+            <p className="text-gray-400 mb-8">Get exclusive access to new drops, pre-orders, and secret sales.</p>
+            <form className="flex gap-2">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyber-pink/50"
+              />
+              <button className="bg-cyber-pink text-black font-bold px-6 py-3 rounded-lg hover:bg-cyber-pink/90 transition-colors">
+                Subscribe
+              </button>
+            </form>
+          </div>
+        </section>
 
       </div>
     </main>

@@ -2,6 +2,9 @@
   "name": "hayase",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -16,21 +19,23 @@
     "date-fns": "^4.1.0",
     "framer-motion": "^12.30.0",
     "lucide-react": "^0.563.0",
-    "next": "14.2.35",
-    "react": "^18",
-    "react-dom": "^18",
+    "next": "^16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-hook-form": "^7.71.1",
     "sonner": "^2.0.7",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "use-debounce": "^10.1.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "autoprefixer": "^10.4.24",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.35",
-    "postcss": "^8",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^10.0.0",
+    "eslint-config-next": "^16.1.6",
+    "postcss": "^8.4.31",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }

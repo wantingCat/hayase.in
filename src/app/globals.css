@@ -13,6 +13,6 @@ body {
 
 @layer utilities {
   .glassmorphism {
-    @apply bg-opacity-20 bg-gray-900 backdrop-filter backdrop-blur-lg border border-white/10;
+    @apply bg-gray-900/20 backdrop-blur-lg border border-white/10;
   }
 }

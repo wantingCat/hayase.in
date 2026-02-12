@@ -1,62 +1,74 @@
 import ProductCard from "@/components/storefront/ProductCard";
+import ShopSidebar from "@/components/storefront/ShopSidebar";
 import { createClient } from "@/utils/supabase/server";
-import { Ghost, Search } from "lucide-react";
+import { Ghost, Search, X } from "lucide-react";
+import Link from "next/link";
 
 export const dynamic = 'force-dynamic';
+export const metadata = {
+    title: 'Shop',
+};
 
-export default async function ShopPage() {
-    const supabase = createClient();
-    const { data: products } = await supabase
+export default async function ShopPage(props: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+    const searchParams = await props.searchParams;
+    const supabase = await createClient();
+
+    // Extract filters
+    const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;
+    const categoryParam = typeof searchParams.category === 'string' ? searchParams.category : undefined;
+    const categoriesFilter = categoryParam ? categoryParam.split(',') : [];
+    const minPrice = typeof searchParams.min === 'string' ? Number(searchParams.min) : undefined;
+    const maxPrice = typeof searchParams.max === 'string' ? Number(searchParams.max) : undefined;
+
+    // Fetch unique categories
+    const { data: categoryData } = await supabase
+        .from('products')
+        .select('category');
+
+    const uniqueCategories = Array.from(new Set(
+        categoryData?.map(item => item.category).filter(Boolean) as string[]
+    )).sort();
+
+    // Build Query
+    let query = supabase
         .from('products')
         .select('*')
         .order('created_at', { ascending: false });
 
+    if (search) {
+        query = query.ilike('name', `%${search}%`);
+    }
+
+    if (categoriesFilter.length > 0) {
+        query = query.in('category', categoriesFilter);
+    }
+
+    if (minPrice !== undefined) {
+        query = query.gte('price', minPrice);
+    }
+
+    if (maxPrice !== undefined) {
+        query = query.lte('price', maxPrice);
+    }
+
+    const { data: products } = await query;
+
     const isEmpty = !products || products.length === 0;
+    const hasFilters = search || categoriesFilter.length > 0 || minPrice !== undefined || maxPrice !== undefined;
 
     return (
         <div className="flex flex-col md:flex-row gap-8 min-h-[60vh] pt-32 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Sidebar - Desktop Only for now */}
-            <aside className="hidden md:block w-64 shrink-0 space-y-8">
-                <div>
-                    <h3 className="text-lg font-bold text-white mb-4">Search</h3>
-                    <div className="relative">
-                        <input
-                            type="text"
-                            placeholder="Search figures..."
-                            className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-white placeholder:text-gray-500 focus:outline-none focus:border-cyber-pink/50 transition-colors"
-                        />
-                        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    </div>
-                </div>
-
-                <div>
-                    <h3 className="text-lg font-bold text-white mb-4">Categories</h3>
-                    <div className="space-y-2">
-                        {['Scale Figures', 'Nendoroid', 'Figma', 'Prize Figures'].map((cat) => (
-                            <label key={cat} className="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer transition-colors">
-                                <div className="w-4 h-4 rounded border border-white/20" />
-                                {cat}
-                            </label>
-                        ))}
-                    </div>
-                </div>
-
-                <div>
-                    <h3 className="text-lg font-bold text-white mb-4">Price Range</h3>
-                    <div className="h-1 bg-white/10 rounded-full relative">
-                        <div className="absolute left-0 w-1/2 h-full bg-cyber-pink rounded-full" />
-                    </div>
-                    <div className="flex justify-between text-xs text-gray-400 mt-2">
-                        <span>₹0</span>
-                        <span>₹50,000+</span>
-                    </div>
-                </div>
-            </aside>
+            {/* Sidebar */}
+            <ShopSidebar categories={uniqueCategories} />
 
             {/* Main Content */}
             <div className="flex-1">
-                <div className="mb-6 flex items-center justify-between">
-                    <h1 className="text-3xl font-bold text-white">All Products</h1>
+                <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <h1 className="text-3xl font-bold text-white">
+                        {search ? `Results for "${search}"` : "All Products"}
+                    </h1>
                     <span className="text-gray-400 text-sm">
                         Showing {products?.length || 0} results
                     </span>
@@ -66,9 +78,18 @@ export default async function ShopPage() {
                     <div className="flex flex-col items-center justify-center py-20 border border-dashed border-white/10 rounded-2xl bg-white/5">
                         <Ghost className="w-16 h-16 text-gray-600 mb-4" />
                         <h2 className="text-xl font-bold text-white mb-2">No products found</h2>
-                        <p className="text-gray-400 text-center max-w-md">
-                            Our curators are hunting for figures... Check back soon!
+                        <p className="text-gray-400 text-center max-w-md mb-6">
+                            We couldn't find any figures matching your criteria.
                         </p>
+                        {hasFilters && (
+                            <Link
+                                href="/shop"
+                                className="px-6 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors flex items-center gap-2"
+                            >
+                                <X size={16} />
+                                Clear Filters
+                            </Link>
+                        )}
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

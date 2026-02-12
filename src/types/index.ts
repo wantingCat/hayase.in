@@ -5,11 +5,13 @@ export interface Product {
     description: string | null;
     price: number;
     stock: number;
-    images: string[] | null;
+    images: string[];
     manufacturer: string | null;
     scale: string | null;
     condition: string | null;
     is_featured: boolean;
+    category: string | null;
+    tags: string[] | null;
 }
 
 export interface Order {
@@ -34,5 +36,15 @@ export interface Coupon {
     current_uses: number;
     expires_at: string | null;
     is_active: boolean;
+    created_at: string;
+}
+
+export interface Review {
+    id: string;
+    product_id: string;
+    user_name: string;
+    rating: number;
+    comment: string;
+    status: 'pending' | 'approved' | 'rejected';
     created_at: string;
 }

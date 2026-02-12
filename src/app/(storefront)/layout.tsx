@@ -12,12 +12,12 @@ export default function StorefrontLayout({
         <CartProvider>
             <div
                 suppressHydrationWarning
-                className="relative min-h-screen bg-[#0a0e17] text-white selection:bg-cyber-pink selection:text-white overflow-x-hidden"
+                className="relative min-h-screen bg-[#0a0e17] text-white selection:bg-cyber-pink selection:text-white overflow-x-hidden flex flex-col"
             >
                 <Navbar />
-                <main className="pb-12 w-full min-h-screen flex flex-col">
+                <div className="flex-1 w-full flex flex-col">
                     {children}
-                </main>
+                </div>
                 <Footer />
                 <CartDrawer />
             </div>

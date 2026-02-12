@@ -1,4 +1,8 @@
 
+export const metadata = {
+    title: 'Terms of Service',
+};
+
 export default function TermsAndConditions() {
     return (
         <div className="max-w-4xl mx-auto py-12 px-6 pt-32 min-h-screen">

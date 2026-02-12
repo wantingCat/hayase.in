@@ -6,7 +6,7 @@ import { Coupon } from "@/types";
 export const dynamic = 'force-dynamic';
 
 export default async function CouponsPage() {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: coupons, error } = await supabase
         .from("coupons")
         .select("*")

@@ -6,12 +6,14 @@ import { Product } from "@/types";
 import ProductGallery from "@/components/storefront/ProductGallery";
 import AddToCartSection from "@/components/storefront/AddToCartSection";
 import ProductCard from "@/components/storefront/ProductCard";
+import ProductReviews from "@/components/storefront/ProductReviews";
 import { Shield, Truck, Package, ChevronRight } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
-    const supabase = createClient();
+export default async function ProductPage(props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
+    const supabase = await createClient();
 
     // 1. Fetch current product
     console.log("Fetching product with ID:", params.id);
@@ -143,6 +145,9 @@ export default async function ProductPage({ params }: { params: { id: string } }
                         </div>
                     </div>
                 </div>
+
+                {/* Reviews Section */}
+                <ProductReviews productId={currentProduct.id} />
 
                 {/* Related Products */}
                 {relatedProducts.length > 0 && (

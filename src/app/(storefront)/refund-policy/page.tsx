@@ -1,4 +1,8 @@
 
+export const metadata = {
+    title: 'Refund Policy',
+};
+
 export default function RefundPolicy() {
     return (
         <div className="max-w-4xl mx-auto py-12 px-6 pt-32 min-h-screen">
