@@ -24,7 +24,24 @@ export function Footer() {
 
                     {/* Quick Links */}
                     <div>
-                        {/* Placeholder for other links if needed, or just keep it simple */}
+                        <h3 className="text-white text-lg font-bold mb-4">Quick Links</h3>
+                        <ul className="space-y-2 text-sm">
+                            <li>
+                                <Link href="/shop" className="hover:text-white transition-colors">
+                                    Shop All
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/faq" className="hover:text-white transition-colors">
+                                    FAQ
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/about" className="hover:text-white transition-colors">
+                                    About Us
+                                </Link>
+                            </li>
+                        </ul>
                     </div>
 
                     {/* Legal */}

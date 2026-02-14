@@ -31,7 +31,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
     return (
         <div className="flex flex-col gap-4">
             {/* Main Image */}
-            <div className="relative w-full aspect-[4/5] md:aspect-square rounded-2xl overflow-hidden bg-white/5 border border-white/10 group">
+            <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-neutral-900 border border-white/10 group">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={selectedIndex}
@@ -47,6 +47,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
                             fill
                             className="object-cover transition-transform duration-700 group-hover:scale-110"
                             priority
+                            unoptimized
                         />
                     </motion.div>
                 </AnimatePresence>
@@ -57,7 +58,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
 
             {/* Thumbnails */}
             {validImages.length > 1 && (
-                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide snap-x">
+                <div className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar snap-x">
                     {validImages.map((img, idx) => (
                         <button
                             key={idx}
@@ -74,6 +75,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
                                 alt={`Thumbnail ${idx + 1}`}
                                 fill
                                 className="object-cover"
+                                unoptimized
                             />
                         </button>
                     ))}

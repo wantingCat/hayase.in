@@ -72,76 +72,51 @@ export default async function ProductPage(props: { params: Promise<{ id: string 
                         />
 
                         {/* Trust Badges (Desktop) */}
-                        <div className="hidden lg:grid grid-cols-3 gap-4 pt-8">
-                            {[
-                                { icon: Shield, label: "Authentic", sub: "100% Verified" },
-                                { icon: Truck, label: "Fast Shipping", sub: "Global Delivery" },
-                                { icon: Package, label: "Secure Pack", sub: "Mint Condition" }
-                            ].map((badge, idx) => (
-                                <div key={idx} className="flex flex-col items-center text-center p-4 rounded-xl bg-white/5 border border-white/5">
-                                    <badge.icon className="text-cyber-cyan mb-2" size={24} />
-                                    <span className="text-sm font-bold text-white">{badge.label}</span>
-                                    <span className="text-xs text-gray-500">{badge.sub}</span>
-                                </div>
-                            ))}
-                        </div>
+
                     </div>
 
                     {/* Right Column: Product Details (40% ~ col-span-5) */}
                     <div className="lg:col-span-5 flex flex-col lg:sticky lg:top-32 h-fit">
-                        <div className="mb-2">
-                            <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-cyber-pink/10 text-cyber-pink border border-cyber-pink/20 uppercase tracking-wider">
-                                {currentProduct.manufacturer}
-                            </span>
-                        </div>
+                        <div className="flex flex-col gap-4 mb-6">
+                            <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight">
+                                {currentProduct.name}
+                            </h1>
 
-                        <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight mb-4">
-                            {currentProduct.name}
-                        </h1>
-
-                        <div className="flex items-center gap-6 mb-8">
-                            <span className="text-4xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-blue-500 text-shadow-glow">
-                                ₹{currentProduct.price.toLocaleString('en-IN')}
-                            </span>
-                            <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold border ${currentProduct.stock > 0
+                            <div className={`self-start flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold border ${currentProduct.stock > 0
                                 ? 'bg-green-500/10 border-green-500/20 text-green-400'
                                 : 'bg-red-500/10 border-red-500/20 text-red-400'
                                 }`}>
                                 <div className={`w-2 h-2 rounded-full ${currentProduct.stock > 0 ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
                                 {currentProduct.stock > 0 ? 'In Stock' : 'Out of Stock'}
                             </div>
+
+                            <span className="text-4xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-blue-500 text-shadow-glow">
+                                ₹{currentProduct.price.toLocaleString('en-IN')}
+                            </span>
                         </div>
 
-                        <div className="prose prose-invert max-w-none text-gray-300 mb-10 leading-relaxed">
-                            <p>{currentProduct.description}</p>
+                        <div className="custom-scrollbar prose prose-invert max-w-none text-gray-300 mb-6 leading-relaxed max-h-[400px] overflow-y-auto pr-2">
+                            {currentProduct.description ? (
+                                <p>{currentProduct.description}</p>
+                            ) : (
+                                <p className="text-gray-500 italic">No description available for this figure yet. Trust us, it's cute.</p>
+                            )}
                         </div>
 
-                        {/* Specifications Table */}
-                        <div className="bg-white/5 rounded-2xl p-6 border border-white/5 space-y-4 mb-10">
-                            <h3 className="text-lg font-bold text-white border-b border-white/10 pb-2">Specs</h3>
-                            <div className="grid grid-cols-2 gap-y-4 gap-x-8 text-sm">
-                                <div>
-                                    <span className="block text-gray-500 text-xs uppercase tracking-wider mb-1">Manufacturer</span>
-                                    <span className="text-white font-medium">{currentProduct.manufacturer}</span>
-                                </div>
-                                <div>
-                                    <span className="block text-gray-500 text-xs uppercase tracking-wider mb-1">Scale</span>
-                                    <span className="text-white font-medium">{currentProduct.scale}</span>
-                                </div>
-                                <div>
-                                    <span className="block text-gray-500 text-xs uppercase tracking-wider mb-1">Condition</span>
-                                    <span className="text-white font-medium capitalize flex items-center gap-2">
-                                        {currentProduct.condition === 'new' && <span className="w-1.5 h-1.5 bg-cyber-pink rounded-full" />}
-                                        {currentProduct.condition}
-                                    </span>
-                                </div>
-                                {/* Placeholder for Source if needed later */}
-                            </div>
-                        </div>
+
 
                         {/* Add To Cart Section */}
-                        <div className="mb-12">
+                        <div className="mb-8">
                             <AddToCartSection product={currentProduct} />
+                        </div>
+
+                        {/* Shipping Info */}
+                        <div className="flex items-start gap-3 p-4 bg-white/5 rounded-xl border border-white/10">
+                            <Truck className="text-gray-400 mt-1" size={20} />
+                            <div className="text-sm text-gray-400">
+                                <p className="mb-1">Flat Rate Shipping: <span className="text-white font-medium">₹60</span></p>
+                                <p><strong className="text-white">Free Shipping</strong> on orders over ₹999.</p>
+                            </div>
                         </div>
                     </div>
                 </div>

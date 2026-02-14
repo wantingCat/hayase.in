@@ -1,127 +1,201 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Zap, Crosshair, ChevronRight } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import ProductCard from "@/components/storefront/ProductCard";
+import { Marquee } from "@/components/ui/marquee";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function Home() {
-  const supabase = await createClient();
-  const { data: products } = await supabase
-    .from('products')
-    .select('*')
-    .order('created_at', { ascending: false });
+    const supabase = createClient();
+    const { data: products } = await (await supabase)
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(4);
 
-  const featuredProducts = products?.slice(0, 4) || [];
-  const isEmpty = !products || products.length === 0;
+    const featuredProducts = products || [];
+    const isEmpty = !products || products.length === 0;
 
-  return (
-    <main className="min-h-screen bg-navy text-foreground overflow-x-hidden relative">
-      {/* Global Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-navy" />
-        <div className="absolute top-0 -left-1/4 w-1/2 h-1/2 bg-cyber-pink/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 -right-1/4 w-1/2 h-1/2 bg-cyber-cyan/20 rounded-full blur-[120px]" />
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
-      </div>
+    return (
+        <main className="min-h-screen bg-neutral-950 text-foreground overflow-x-hidden selection:bg-purple-600 selection:text-white">
 
+            {/* 
+        ------------------------------------------------------------------
+        SECTION 1: HERO (SPLIT LAYOUT)
+        "Level Up Your Collection"
+        ------------------------------------------------------------------
+      */}
+            <section className="relative w-full min-h-[80vh] flex flex-col pt-24 lg:pt-0 lg:flex-row items-center justify-between gap-12 px-6 sm:px-12 lg:px-24 border-b border-white/5">
 
-      <div className="relative z-10">
+                {/* Left: Text Content */}
+                <div className="w-full lg:w-1/2 flex flex-col justify-center relative z-10 py-12 lg:py-0">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-none text-gray-300 text-xs font-mono tracking-widest w-fit mb-6">
+                        <span className="w-2 h-2 bg-purple-600 animate-pulse" />
+                        PREMIUM & BUDGET
+                    </div>
 
+                    <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black text-white tracking-tighter leading-[0.9] mb-6 uppercase">
+                        LEVEL UP <br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">
+                            YOUR COLLECTION.
+                        </span>
+                    </h1>
 
-        <section className={`relative w-full flex items-center justify-center overflow-hidden pt-32 ${isEmpty ? 'min-h-[60vh]' : 'h-[85vh]'}`}>
+                    <p className="text-xl text-neutral-400 max-w-lg leading-relaxed mb-10 font-medium">
+                        Premium & Budget-Friendly Figures. Shipped safely from UP to your shelf.
+                    </p>
 
-          <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-            {isEmpty ? (
-              <div className="py-10">
-                <Sparkles className="w-20 h-20 text-cyber-pink mx-auto mb-6 animate-pulse" />
-                <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tighter mb-6 leading-tight">
-                  Grand Opening <br /><span className="text-cyber-cyan">Coming Soon</span>
-                </h1>
-                <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-                  Our curators are currently hunting for the rarest figures in Akihabara.
-                  <br />
-                  Check back soon for our first drop!
-                </p>
-              </div>
-            ) : (
-              <>
-                <div className="inline-block mb-4 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-xs font-mono text-cyber-cyan tracking-widest animate-in fade-in slide-in-from-bottom-4 duration-700">
-                  PREMIUM ANIME COLLECTIBLES
+                    <Link
+                        href="/shop"
+                        className="group w-full sm:w-fit relative px-8 py-5 bg-purple-600 text-white font-black text-xl tracking-wide uppercase italic hover:bg-purple-500 transition-colors duration-300 text-center clip-path-slant"
+                        style={{ clipPath: "polygon(0 0, 100% 0, 95% 100%, 5% 100%)" }}
+                    >
+                        Start Hunting
+                    </Link>
                 </div>
-                <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tighter mb-8 leading-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-                  The Best <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyber-pink to-purple-500">Anime Figures</span> <br />
-                  in India.
-                </h1>
-                <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-                  Authentic, high-quality figures delivered straight to your doorstep.
-                  Curated for the true collector.
-                </p>
 
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
-                  <Link
-                    href="/shop"
-                    className="group relative px-8 py-4 bg-cyber-pink text-black font-bold text-lg rounded-full overflow-hidden transition-transform hover:scale-105"
-                  >
-                    <span className="relative z-10 flex items-center gap-2">
-                      Shop Now <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                {/* Right: Visual Placeholder */}
+                <div className="w-full lg:w-1/2 h-[400px] lg:h-[600px] bg-neutral-800 rounded-2xl flex items-center justify-center border-2 border-dashed border-neutral-700 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+                    <span className="text-neutral-500 font-mono text-lg uppercase tracking-widest group-hover:text-purple-400 transition-colors duration-300">
+                // HERO IMAGE PLACEHOLDER //
                     </span>
-                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                  </Link>
-                  <Link
-                    href="/shop"
-                    className="px-8 py-4 rounded-full border border-white/20 text-white font-medium hover:bg-white/5 transition-colors"
-                  >
-                    View Collection
-                  </Link>
                 </div>
-              </>
+            </section>
+
+
+            {/* 
+        ------------------------------------------------------------------
+        SECTION 2: INFINITE MARQUEE
+        "India's Otaku HQ..."
+        ------------------------------------------------------------------
+      */}
+            <div className="bg-yellow-400 py-6 border-y-4 border-black relative z-20 overflow-hidden">
+                <Marquee className="[--duration:25s]" repeat={8}>
+                    <span className="mx-8 font-black text-3xl md:text-5xl text-black italic tracking-tighter uppercase whitespace-nowrap">
+                        INDIA'S OTAKU HQ • TANK BUILD PACKAGING • NO CUSTOMS DUTY • SECURE SHIPPING •
+                    </span>
+                </Marquee>
+            </div>
+
+
+            {/* 
+        ------------------------------------------------------------------
+        SECTION 3: NEW DROPS (MINIMALIST GRID)
+        "Fresh Arrivals"
+        ------------------------------------------------------------------
+      */}
+            {!isEmpty && (
+                <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-[1800px] mx-auto">
+                    <div className="flex items-end justify-between mb-12 border-b border-white/10 pb-6">
+                        <h2 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter">
+                            FRESH ARRIVALS
+                        </h2>
+                        <Link
+                            href="/shop"
+                            className="text-white hover:text-yellow-400 transition-colors font-bold text-lg flex items-center gap-2 uppercase tracking-wide"
+                        >
+                            View All <ArrowRight className="w-5 h-5" />
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        {featuredProducts.map((product) => (
+                            <div key={product.id} className="group">
+                                {/* Minimalist Card approach - we let ProductCard handle rendering but try to influence container */}
+                                <div className="relative">
+                                    <ProductCard product={product} />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
             )}
-          </div>
-        </section>
 
-        {/* New Arrivals Section */}
-        {!isEmpty && (
-          <section className="py-20 px-4 max-w-7xl mx-auto">
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                <h2 className="text-3xl font-bold text-white mb-2">New Arrivals</h2>
-                <p className="text-gray-400">Fresh from Japan, just for you.</p>
-              </div>
-              <Link href="/shop" className="text-cyber-cyan hover:text-white transition-colors flex items-center gap-1 text-sm font-bold">
-                View All <ArrowRight size={16} />
-              </Link>
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {featuredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </section>
-        )}
+            {/* 
+        ------------------------------------------------------------------
+        SECTION 4: BUDGET HUNTER BANNER
+        "Under 999"
+        ------------------------------------------------------------------
+      */}
+            <section className="relative w-full py-32 bg-neutral-900 border-y border-white/5 overflow-hidden group">
+                <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5 mix-blend-overlay" />
 
-        {/* Newsletter */}
-        <section className="py-24 bg-gradient-to-t from-black to-transparent border-t border-white/5 relative overflow-hidden">
-          <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-cyber-pink/5 to-transparent opacity-50 pointer-events-none" />
-          <div className="relative z-10 max-w-xl mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold text-white mb-4">Join the Hunter Association</h2>
-            <p className="text-gray-400 mb-8">Get exclusive access to new drops, pre-orders, and secret sales.</p>
-            <form className="flex gap-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyber-pink/50"
-              />
-              <button className="bg-cyber-pink text-black font-bold px-6 py-3 rounded-lg hover:bg-cyber-pink/90 transition-colors">
-                Subscribe
-              </button>
-            </form>
-          </div>
-        </section>
+                <div className="relative z-10 max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-12 text-center md:text-left">
+                    <div>
+                        <h2 className="text-5xl md:text-8xl font-black text-white italic tracking-tighter mb-2 uppercase">
+                            UNDER ₹999?
+                        </h2>
+                        <p className="text-2xl md:text-3xl text-gray-400 font-bold uppercase tracking-wide">
+                            We got you covering the bill.
+                        </p>
+                    </div>
 
-      </div>
-    </main>
-  );
+                    <Link
+                        href="/shop?max=1000"
+                        className="group relative px-10 py-6 border-2 border-white text-white font-black text-xl italic uppercase hover:bg-white hover:text-black transition-all duration-300"
+                    >
+                        Shop Budget Figures
+                    </Link>
+                </div>
+            </section>
+
+
+            {/* 
+        ------------------------------------------------------------------
+        SECTION 5: NEWSLETTER (MISSION BRIEFING)
+        ------------------------------------------------------------------
+      */}
+            <section className="py-32 px-4 bg-black relative border-t border-white/10">
+                <div className="max-w-4xl mx-auto border border-white/20 bg-neutral-950 p-8 md:p-12 relative overflow-hidden">
+
+                    {/* Decorative Corner Markers */}
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-yellow-400" />
+                    <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-yellow-400" />
+                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-yellow-400" />
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-yellow-400" />
+
+                    <div className="text-center font-mono space-y-6 relative z-10">
+                        <div className="uppercase text-xs tracking-[0.3em] text-yellow-400">
+              // CLASSIFIED INTEL //
+                        </div>
+
+                        <h2 className="text-3xl md:text-5xl font-bold text-white uppercase tracking-tighter">
+                            HUNTER ASSOCIATION
+                        </h2>
+
+                        <p className="text-gray-400 max-w-lg mx-auto leading-relaxed">
+                            Accept the mission. Get access to secret drops, pre-order intel, and member-only loot crates.
+                        </p>
+
+                        <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-0 mt-8 border border-white/20">
+                            <input
+                                type="email"
+                                placeholder="CODENAME: EMAIL"
+                                className="flex-1 bg-black px-6 py-4 text-white placeholder:text-gray-700 focus:outline-none font-mono text-sm uppercase"
+                            />
+                            <button
+                                type="button"
+                                className="bg-white text-black font-bold px-8 py-4 hover:bg-yellow-400 transition-colors uppercase tracking-wider text-sm border-l border-black"
+                            >
+                                JOIN
+                            </button>
+                        </form>
+
+                        <div className="text-[10px] text-gray-700 mt-4 uppercase tracking-widest">
+                            SECURE CHANNEL ESTABLISHED • NO SPAM ALGORITHM DETECTED
+                        </div>
+                    </div>
+
+                    {/* Background Subtle Elements */}
+                    <Crosshair className="absolute top-4 right-4 text-white/5 w-24 h-24 rotate-45 pointer-events-none" />
+                    <Crosshair className="absolute bottom-4 left-4 text-white/5 w-24 h-24 -rotate-45 pointer-events-none" />
+                </div>
+            </section>
+
+        </main>
+    );
 }

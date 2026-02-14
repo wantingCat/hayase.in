@@ -59,7 +59,7 @@ export default async function ShopPage(props: {
     const hasFilters = search || categoriesFilter.length > 0 || minPrice !== undefined || maxPrice !== undefined;
 
     return (
-        <div className="flex flex-col md:flex-row gap-8 min-h-[60vh] pt-32 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row gap-8 min-h-[60vh] pt-32 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
             {/* Sidebar */}
             <ShopSidebar categories={uniqueCategories} />
 

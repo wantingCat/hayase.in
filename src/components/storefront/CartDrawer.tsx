@@ -3,6 +3,7 @@
 import { useCart } from "@/context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, ShoppingBag, Trash2, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 
@@ -76,13 +77,14 @@ export default function CartDrawer() {
                             ) : (
                                 items.map((item) => (
                                     <div key={item.id} className="flex gap-4">
-                                        <div className="relative w-20 h-24 rounded-lg overflow-hidden border border-white/10 bg-black/50 flex-shrink-0">
+                                        <div className="relative w-16 h-16 aspect-square rounded overflow-hidden bg-neutral-900 border border-neutral-800 flex-shrink-0">
                                             {item.images && item.images[0] ? (
                                                 <Image
                                                     src={item.images[0]}
                                                     alt={item.name}
                                                     fill
                                                     className="object-cover"
+                                                    unoptimized
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-xs text-gray-600">No Img</div>
@@ -139,13 +141,14 @@ export default function CartDrawer() {
                                         <span className="text-soft-cyan">₹{subtotal.toLocaleString()}</span>
                                     </div>
                                 </div>
-                                <button
-                                    onClick={() => alert("Checkout Logic Coming Soon!")}
+                                <Link
+                                    href="/checkout"
+                                    onClick={() => setIsCartOpen(false)}
                                     className="w-full py-4 bg-gradient-to-r from-cyber-pink to-electric-purple rounded-xl font-bold text-white shadow-[0_0_20px_rgba(255,0,255,0.3)] hover:shadow-[0_0_30px_rgba(255,0,255,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                                 >
                                     Proceed to Checkout
                                     <ArrowRight size={20} />
-                                </button>
+                                </Link>
                                 <button
                                     onClick={clearCart}
                                     className="w-full text-xs text-gray-500 hover:text-red-400 transition-colors text-center"
