@@ -120,8 +120,9 @@ export default function ProductTable({ products, onEdit }: ProductTableProps) {
                                 <td className="p-4 font-medium text-white">{product.name}</td>
                                 <td className="p-4 font-mono text-soft-cyan">₹{product.price}</td>
                                 <td className="p-4">
-                                    <span className={`px-2 py-1 rounded text-xs font-bold ${product.stock > 0 ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
-                                        {product.stock > 0 ? `${product.stock} in stock` : 'Out of Stock'}
+                                    <span className={`px-2 py-1 rounded text-xs font-bold ${(product.stock_quantity ?? product.stock) > 0 ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
+                                        }`}>
+                                        {(product.stock_quantity ?? product.stock) > 0 ? `${product.stock_quantity ?? product.stock} in stock` : 'Out of Stock'}
                                     </span>
                                 </td>
                                 <td className="p-4 text-sm text-gray-500">
@@ -178,8 +179,8 @@ export default function ProductTable({ products, onEdit }: ProductTableProps) {
                                 <div className="flex items-center gap-2 mt-1">
                                     <span className="font-mono text-soft-cyan">₹{product.price}</span>
                                     <span className="text-xs text-gray-600">•</span>
-                                    <span className={`text-xs font-bold ${product.stock > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                        {product.stock > 0 ? `${product.stock} In Stock` : 'Out of Stock'}
+                                    <span className={`text-xs font-bold ${(product.stock_quantity ?? product.stock) > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                        {(product.stock_quantity ?? product.stock) > 0 ? `${product.stock_quantity ?? product.stock} In Stock` : 'Out of Stock'}
                                     </span>
                                 </div>
                             </div>

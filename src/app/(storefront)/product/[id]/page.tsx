@@ -82,12 +82,18 @@ export default async function ProductPage(props: { params: Promise<{ id: string 
                                 {currentProduct.name}
                             </h1>
 
-                            <div className={`self-start flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold border ${currentProduct.stock > 0
-                                ? 'bg-green-500/10 border-green-500/20 text-green-400'
+                            <div className={`self-start flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold border ${currentProduct.stock_quantity > 0
+                                ? (currentProduct.stock_quantity <= 5
+                                    ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-400'
+                                    : 'bg-green-500/10 border-green-500/20 text-green-400')
                                 : 'bg-red-500/10 border-red-500/20 text-red-400'
                                 }`}>
-                                <div className={`w-2 h-2 rounded-full ${currentProduct.stock > 0 ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
-                                {currentProduct.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                                <div className={`w-2 h-2 rounded-full ${currentProduct.stock_quantity > 0
+                                    ? (currentProduct.stock_quantity <= 5 ? 'bg-yellow-500 animate-pulse' : 'bg-green-500 animate-pulse')
+                                    : 'bg-red-500'}`} />
+                                {currentProduct.stock_quantity > 0
+                                    ? (currentProduct.stock_quantity <= 5 ? `Only ${currentProduct.stock_quantity} left! Order fast.` : 'In Stock')
+                                    : 'Out of Stock'}
                             </div>
 
                             <span className="text-4xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-blue-500 text-shadow-glow">
@@ -107,7 +113,12 @@ export default async function ProductPage(props: { params: Promise<{ id: string 
 
                         {/* Add To Cart Section */}
                         <div className="mb-8">
-                            <AddToCartSection product={currentProduct} />
+                            <div className="mb-8">
+                                <AddToCartSection product={{
+                                    ...currentProduct,
+                                    stock: currentProduct.stock_quantity ?? currentProduct.stock // Ensure stock prop uses new quantity if available
+                                }} />
+                            </div>
                         </div>
 
                         {/* Shipping Info */}

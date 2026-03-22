@@ -14,7 +14,9 @@ import {
     Search,
     Ticket,
     Settings,
-    Star
+    Star,
+    Mail,
+    Send
 } from "lucide-react";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,6 +28,8 @@ const navItems = [
     { name: "Requests", href: "/admin/requests", icon: Search },
     { name: "Reviews", href: "/admin/reviews", icon: Star },
     { name: "Coupons", href: "/admin/coupons", icon: Ticket },
+    { name: "Notifications", href: "/admin/notifications", icon: Mail }, // Added Notifications
+    { name: "Newsletter", href: "/admin/newsletter", icon: Send },
     // New "Settings" item with sub-items
     { name: "Payment Settings", href: "/admin/settings/payment", icon: Settings },
 ];

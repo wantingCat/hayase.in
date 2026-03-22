@@ -4,7 +4,8 @@ export interface Product {
     name: string;
     description: string | null;
     price: number;
-    stock: number;
+    stock: number; // Keeping for backward compatibility if used elsewhere, but prefer stock_quantity
+    stock_quantity: number;
     images: string[];
     manufacturer: string | null;
     scale: string | null;

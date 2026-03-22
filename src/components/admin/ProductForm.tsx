@@ -53,7 +53,7 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
                 // Edit mode
                 setValue("name", product.name);
                 setValue("price", product.price);
-                setValue("stock", product.stock);
+                setValue("stock", product.stock_quantity ?? product.stock); // Use stock_quantity
                 setValue("manufacturer", product.manufacturer || "");
                 setValue("scale", product.scale || "");
                 setValue("description", product.description || "");
@@ -167,6 +167,7 @@ export default function ProductForm({ isOpen, onClose, product }: ProductFormPro
                 name: data.name,
                 price: parseFloat(data.price.toString()),
                 stock: parseInt(data.stock.toString()),
+                stock_quantity: parseInt(data.stock.toString()), // Sync stock_quantity
                 manufacturer: data.manufacturer,
                 scale: scaleValue,
                 condition: "New", // Force condition to New

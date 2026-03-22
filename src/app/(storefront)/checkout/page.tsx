@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2, Copy, Check, ShieldCheck, Truck, ShoppingBag } from "lucide-react";
 import Image from "next/image";
+import { sendOrderConfirmationEmail } from "@/actions/emails";
 
 interface PaymentSettings {
     upi_id: string;
@@ -265,7 +266,25 @@ export default function CheckoutPage() {
 
             if (itemsError) throw itemsError;
 
-            // 3. Clear Cart & Redirect
+            // 3. Send Order Confirmation Email
+            try {
+                await sendOrderConfirmationEmail({
+                    email: formData.email,
+                    customerName: formData.fullname,
+                    orderId: order.id,
+                    totalAmount: finalTotal,
+                    items: items.map(item => ({
+                        name: item.name,
+                        quantity: item.quantity,
+                        price: item.price
+                    }))
+                });
+            } catch (emailError) {
+                console.error("Failed to send order confirmation email:", emailError);
+                // Don't fail the order if email fails
+            }
+
+            // 4. Clear Cart & Redirect
             setOrderPlaced(true); // Flag to prevent useEffect redirect
             clearCart();
             toast.success("Order placed successfully!");

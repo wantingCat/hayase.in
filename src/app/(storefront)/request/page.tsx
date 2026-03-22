@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { Sparkles, Send, Loader2, CheckCircle } from "lucide-react";
+import { Sparkles, Send, Loader2, CheckCircle, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function RequestPage() {
@@ -21,15 +21,17 @@ export default function RequestPage() {
         setLoading(true);
 
         try {
+            console.log("Submitting request with payload:", formData);
             const { error } = await supabase
                 .from('requests')
                 .insert([formData]);
 
             if (error) throw error;
             setSuccess(true);
-        } catch (error) {
-            console.error("Error submitting request:", error);
-            alert("Failed to submit request. Please try again.");
+        } catch (error: any) {
+            console.error("Full Error Details:", JSON.stringify(error, null, 2));
+            const message = error.message || "Failed to submit request. Please try again.";
+            alert(message);
         } finally {
             setLoading(false);
         }
@@ -74,7 +76,7 @@ export default function RequestPage() {
                 <form onSubmit={handleSubmit} className="bg-[#0a0e17]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-10 shadow-2xl space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <label className="text-xs font-bold uppercase text-gray-500 tracking-wider">Your Name</label>
+                            <label className="text-xs font-bold uppercase text-neutral-300 tracking-wider">Your Name</label>
                             <input
                                 required
                                 type="text"
@@ -85,7 +87,7 @@ export default function RequestPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-xs font-bold uppercase text-gray-500 tracking-wider">Email Address</label>
+                            <label className="text-xs font-bold uppercase text-neutral-300 tracking-wider">Email Address</label>
                             <input
                                 required
                                 type="email"
@@ -98,7 +100,7 @@ export default function RequestPage() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-xs font-bold uppercase text-gray-500 tracking-wider">Character / Anime Name</label>
+                        <label className="text-xs font-bold uppercase text-neutral-300 tracking-wider">Character / Anime Name</label>
                         <input
                             required
                             type="text"
@@ -111,7 +113,7 @@ export default function RequestPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <label className="text-xs font-bold uppercase text-gray-500 tracking-wider">Budget Range</label>
+                            <label className="text-xs font-bold uppercase text-neutral-300 tracking-wider">Budget Range</label>
                             <select
                                 required
                                 value={formData.budget}
@@ -126,7 +128,7 @@ export default function RequestPage() {
                             </select>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-xs font-bold uppercase text-gray-500 tracking-wider">Ref Image URL (Optional)</label>
+                            <label className="text-xs font-bold uppercase text-neutral-300 tracking-wider">Ref Image URL (Optional)</label>
                             <input
                                 type="url"
                                 value={formData.reference_image_url}
